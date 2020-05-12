@@ -1,9 +1,19 @@
 package com.company;
 
+import jdk.nashorn.internal.objects.Global;
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class InsomniaView {
@@ -22,7 +32,7 @@ public class InsomniaView {
     private JCheckBox enable;
     private JCheckBox disable;
     private JCheckBox exitFromApp;
-    private JCheckBox hideOnSystemTray ;
+    private JCheckBox hideOnSystemTray;
     private JCheckBox lightTheme;
     private JCheckBox darkTheme;
     // --------{ View }-------:
@@ -39,14 +49,21 @@ public class InsomniaView {
     private JFrame aboutFrame;
 
 
-
-
     private JSplitPane splitPane;
     private JPanel panel1;
     private JPanel panel2;
     private JPanel panel3;
 
-    public InsomniaView(){
+    // ======= > panel 1
+    private JButton newFolder;
+    private JButton newRequest;
+    private String nameOfNewRequest;
+    private String nameOfNewFolder;
+
+    private DefaultMutableTreeNode allRequests;
+    private JTree treeOfRequests;
+
+    public InsomniaView() {
         insomniaFrame = new JFrame("Insomnia");
 
         menuBar = new JMenuBar();
@@ -89,10 +106,17 @@ public class InsomniaView {
         panel2 = new JPanel();
         panel3 = new JPanel();
 
+        // ======= > panel 1
+        newFolder = new JButton("New Folder");
+        newRequest = new JButton("New Request");
+
+        allRequests = new DefaultMutableTreeNode("All Request", true);
+        treeOfRequests = new JTree(allRequests);
+
         setInsomniaFrame();
     }
 
-    public void setInsomniaFrame(){
+    public void setInsomniaFrame() {
         insomniaFrame.setSize(new Dimension(1200, 700));
         insomniaFrame.setLocation(400, 150);
         insomniaFrame.setResizable(true);
@@ -106,7 +130,7 @@ public class InsomniaView {
         insomniaFrame.add(splitPane, BorderLayout.CENTER);
     }
 
-    public void setMenuBar(){
+    public void setMenuBar() {
         // --------{ Application }--------
         options.addActionListener(new MenuHandler());
         exit.addActionListener(new MenuHandler());
@@ -126,7 +150,7 @@ public class InsomniaView {
         hideOnSystemTray.addItemListener(new CheckBoxHandler());
 
         JPanel followRedirectPanel = new JPanel();
-        followRedirectPanel.setLayout(new GridLayout(2 , 1, 1, 1));
+        followRedirectPanel.setLayout(new GridLayout(2, 1, 1, 1));
         followRedirectPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY
                 , 1, true), " [ Follow Redirect ]", TitledBorder.LEFT, TitledBorder.TOP));
         followRedirectPanel.add(enable);
@@ -161,7 +185,7 @@ public class InsomniaView {
         aboutText.setText("Hi, I'm Maryam Goli!\n\nMy student number : 9831054\nMy email : goli.mary.m@gmail.com\n\nI hope you enjoy the app :)\n\n~Maryam ");
         aboutText.setEditable(false);
         aboutFrame.setSize(300, 300);
-        aboutFrame.setLocation(800 , 400);
+        aboutFrame.setLocation(800, 400);
         aboutFrame.add(aboutText);
 
         helpItemText.setFont(new Font("Arial", 14, 14));
@@ -181,7 +205,7 @@ public class InsomniaView {
         menuBar.add(help);
     }
 
-    public void setSplitPane(){
+    public void setSplitPane() {
         setPanel1();
         setPanel2();
         setPanel3();
@@ -197,63 +221,127 @@ public class InsomniaView {
 
     }
 
-    public void setPanel1(){
-        if(darkTheme.isSelected()){
-            panel1.setBackground(Color.DARK_GRAY);
-        }else if(lightTheme.isSelected()){
-            panel1.setBackground(Color.LIGHT_GRAY);
-        }
+    //==============================================================> panel 1
+
+    public void setPanel1() {
+//        if(darkTheme.isSelected()){
+//            panel1.setBackground(Color.DARK_GRAY);
+//        }else if(lightTheme.isSelected()){
+//            panel1.setBackground(Color.LIGHT_GRAY);
+//        }
         panel1.setMinimumSize(new Dimension(300, 600));
+
+        // for label "Insomnia" on top of panel 1
+        JPanel insomniaPanel = new JPanel();
+        insomniaPanel.setLayout(new BorderLayout());
+        insomniaPanel.setBackground(new Color(148, 40, 255));
+        insomniaPanel.setPreferredSize(new Dimension(insomniaPanel.getWidth(), 50));
+
+        JLabel insomniaLabel = new JLabel();
+        insomniaLabel.setText("  Insomnia");
+        insomniaLabel.setFont(new Font("Calibri", 45, 22));
+        insomniaLabel.setForeground(Color.WHITE);
+        insomniaLabel.setHorizontalAlignment(JLabel.LEFT);
+        insomniaLabel.setVerticalAlignment(JLabel.CENTER);
+
+        insomniaPanel.add(insomniaLabel);
+
+        panel1.setLayout(new BorderLayout());
+        panel1.add(insomniaPanel, BorderLayout.PAGE_START);
+
+        // for showing list of requests
+        JPanel requestPanel = new JPanel();
+        requestPanel.setLayout(new BorderLayout());
+        requestPanel.setBorder(new EmptyBorder(3, 3, 3, 3));
+
+        // buttons for create new folder or new request
+        JPanel newRequestButtons = new JPanel();
+        newRequestButtons.setLayout(new GridLayout(1, 2, 2, 2));
+
+        newRequest.addActionListener(new RequestButtonHandler());
+        newFolder.addActionListener(new RequestButtonHandler());
+
+        newRequestButtons.add(newRequest);
+        newRequestButtons.add(newFolder);
+
+        allRequests = new DefaultMutableTreeNode("All Request", true);
+        DefaultMutableTreeNode firstRequest = new DefaultMutableTreeNode("FirstRequest");
+        allRequests.add(firstRequest);
+
+        treeOfRequests = new JTree(allRequests);
+        treeOfRequests.scrollPathToVisible(new TreePath(allRequests.getPath()));
+
+        requestPanel.add(newRequestButtons, BorderLayout.NORTH);
+        requestPanel.add(treeOfRequests, BorderLayout.CENTER);
+
+        panel1.add(requestPanel, BorderLayout.CENTER);
+
+        final DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) (treeOfRequests.getCellRenderer());
+        renderer.setFont(new Font("Calibri", 45, 19));
+        treeOfRequests.setRowHeight(30);
+
+        allRequests.breadthFirstEnumeration();
+
+        if (darkTheme.isSelected()) {
+            panel1.setBackground(Color.DARK_GRAY);
+            treeOfRequests.setBackground(Color.DARK_GRAY);
+            renderer.setTextNonSelectionColor(Color.WHITE);
+            renderer.setTextSelectionColor(new Color(197, 138, 255));
+        } else if (lightTheme.isSelected()) {
+            panel1.setBackground(Color.LIGHT_GRAY);
+            treeOfRequests.setBackground(Color.LIGHT_GRAY);
+            renderer.setTextNonSelectionColor(Color.BLACK);
+            renderer.setTextSelectionColor(new Color(197, 138, 255));
+        }
     }
 
-    public void setPanel2(){
-        if(darkTheme.isSelected()){
+    //==============================================================> panel 2
+
+    public void setPanel2() {
+        if (darkTheme.isSelected()) {
             panel2.setBackground(Color.DARK_GRAY);
-        }else if(lightTheme.isSelected()){
+        } else if (lightTheme.isSelected()) {
             panel2.setBackground(Color.LIGHT_GRAY);
         }
     }
 
-    public void setPanel3(){
-        if(darkTheme.isSelected()){
+    //==============================================================> panel 3
+
+    public void setPanel3() {
+        if (darkTheme.isSelected()) {
             panel3.setBackground(Color.DARK_GRAY);
-        }else if(lightTheme.isSelected()){
+        } else if (lightTheme.isSelected()) {
             panel3.setBackground(Color.LIGHT_GRAY);
         }
     }
 
-    public void showGUI(){
+    public void showGUI() {
         insomniaFrame.setVisible(true);
     }
 
 
-
-
-
-
-
-    private class MenuHandler implements ActionListener{
+    private class MenuHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource().equals(options)){
+            if (e.getSource().equals(options)) {
                 optionsFrame.setVisible(true);
-            }else if(e.getSource().equals(toggleFullScreen)){
-                if(isFullScreen == false){
+            } else if (e.getSource().equals(toggleFullScreen)) {
+                if (isFullScreen == false) {
                     insomniaFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                }else{
+                } else {
                     insomniaFrame.setExtendedState(JFrame.NORMAL);
                 }
                 isFullScreen = !isFullScreen;
-            }else if(e.getSource().equals(toggleSidebar)){
+            } else if (e.getSource().equals(toggleSidebar)) {
                 visibilityOfPanel1 = !visibilityOfPanel1;
                 panel1.setVisible(visibilityOfPanel1);
                 splitPane.setLeftComponent(panel1);
-            }else if(e.getSource().equals(about)){
+            } else if (e.getSource().equals(about)) {
                 aboutFrame.setVisible(true);
-            }else if(e.getSource().equals(helpItem)){
+            } else if (e.getSource().equals(helpItem)) {
                 helpItemFrame.setVisible(true);
-            }else if(e.getSource().equals(exit)){
+            } else if (e.getSource().equals(exit)) {
                 insomniaFrame.dispose();
             }
         }
@@ -262,24 +350,180 @@ public class InsomniaView {
     private class CheckBoxHandler implements ItemListener {
         @Override
         public void itemStateChanged(ItemEvent e) {
-            if(e.getSource().equals(lightTheme)){
+            final DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) (treeOfRequests.getCellRenderer());
+
+            if (e.getSource().equals(lightTheme)) {
+
                 panel1.setBackground(Color.LIGHT_GRAY);
                 panel2.setBackground(Color.LIGHT_GRAY);
                 panel3.setBackground(Color.LIGHT_GRAY);
-            }else if(e.getSource().equals(darkTheme)){
+
+                treeOfRequests.setBackground(Color.LIGHT_GRAY);
+                renderer.setTextNonSelectionColor(Color.BLACK);
+                renderer.setTextSelectionColor(new Color(197, 138, 255));
+
+            } else if (e.getSource().equals(darkTheme)) {
+
                 panel1.setBackground(Color.DARK_GRAY);
                 panel2.setBackground(Color.DARK_GRAY);
                 panel3.setBackground(Color.DARK_GRAY);
-            }else if(e.getSource().equals(exitFromApp)){
+
+                treeOfRequests.setBackground(Color.DARK_GRAY);
+                renderer.setTextNonSelectionColor(Color.WHITE);
+                renderer.setTextSelectionColor(new Color(197, 138, 255));
+
+            } else if (e.getSource().equals(exitFromApp)) {
                 insomniaFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }else if(e.getSource().equals(hideOnSystemTray)){
+            } else if (e.getSource().equals(hideOnSystemTray)) {
                 insomniaFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            }else if(e.getSource().equals(enable)){
+            } else if (e.getSource().equals(enable)) {
                 // In the next phase of the project
-            }else if(e.getSource().equals(disable)){
+            } else if (e.getSource().equals(disable)) {
                 // In the next phase of the project
             }
         }
     }
 
+    private class RequestButtonHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            DefaultMutableTreeNode parentNode;
+            TreePath parentPath = treeOfRequests.getSelectionPath();
+
+            //button : New Folder
+            if (e.getSource().equals(newFolder)) {
+                if (parentPath == null) {
+                    //There is no selection. Default to the root node (all request).
+                    parentNode = allRequests;
+                } else {
+                    parentNode = (DefaultMutableTreeNode) (parentPath.getLastPathComponent());
+                    if (parentNode.getChildCount() == 0) {
+                        JOptionPane.showMessageDialog(null, "You can not create new folder here!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        buildFrameForNameOfFolder(parentNode);
+                    }
+                }
+            //button : New Request
+            } else if (e.getSource().equals(newRequest)) {
+                if (parentPath == null) {
+                    //There is no selection. Default to the root node (all request).
+                    parentNode = allRequests;
+                } else {
+                    parentNode = (DefaultMutableTreeNode) (parentPath.getLastPathComponent());
+                    if (parentNode.getChildCount() == 0) {
+                        buildFrameForNameOfRequest(allRequests);
+                    } else {
+                        buildFrameForNameOfRequest(parentNode);
+                    }
+                }
+            }
+        }
+
+        public void buildFrameForNameOfFolder(DefaultMutableTreeNode parentNode) {
+            JFrame setNameFrame = new JFrame("New Folder");
+            setNameFrame.setSize(new Dimension(500, 200));
+            setNameFrame.setLocation(900, 400);
+            setNameFrame.setLayout(new BorderLayout());
+            setNameFrame.setResizable(false);
+
+            JPanel namePanel = new JPanel();
+            namePanel.setLayout(new BorderLayout());
+            namePanel.setBorder(new EmptyBorder(30, 10, 30, 10));
+
+            JLabel nameLabel = new JLabel("Name");
+            nameLabel.setFont(new Font("Calibri", 14, 19));
+            nameLabel.setBorder(new EmptyBorder(0, 5, 10, 10));
+
+            JTextField nameField = new JTextField();
+            nameField.setText("My Folder");
+
+            JButton createButton = new JButton("Create");
+
+            namePanel.add(nameLabel, BorderLayout.NORTH);
+            namePanel.add(nameField, BorderLayout.CENTER);
+
+            setNameFrame.add(namePanel, BorderLayout.CENTER);
+            setNameFrame.add(createButton, BorderLayout.SOUTH);
+
+            setNameFrame.setVisible(true);
+
+            createButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    nameOfNewFolder = nameField.getText();
+                    DefaultMutableTreeNode newFolder = new DefaultMutableTreeNode(nameOfNewFolder);
+                    DefaultMutableTreeNode firstRequest = new DefaultMutableTreeNode("First Request");
+                    newFolder.add(firstRequest);
+
+                    DefaultTreeModel model = (DefaultTreeModel) treeOfRequests.getModel();
+                    model.insertNodeInto(newFolder, parentNode, parentNode.getChildCount());
+                    treeOfRequests.scrollPathToVisible(new TreePath(newFolder.getPath()));
+
+                    setNameFrame.setVisible(false);
+                }
+            });
+        }
+    }
+
+
+    public void buildFrameForNameOfRequest(DefaultMutableTreeNode parentNode) {
+        JFrame setNameFrame = new JFrame("New Request");
+        setNameFrame.setSize(new Dimension(500, 230));
+        setNameFrame.setLocation(900, 400);
+        setNameFrame.setLayout(new BorderLayout());
+        setNameFrame.setResizable(false);
+
+        JPanel newRequestPanel = new JPanel();
+        newRequestPanel.setLayout(new BorderLayout());
+        newRequestPanel.setBorder(new EmptyBorder(20, 10, 10, 10));
+
+        // create panel and add to frame
+        JPanel namePanel = new JPanel();
+        namePanel.setLayout(new BorderLayout());
+        namePanel.setBorder(new EmptyBorder(30, 10, 30, 10));
+
+        JLabel nameLabel = new JLabel("Name");
+        nameLabel.setFont(new Font("Calibri", 14, 19));
+        nameLabel.setBorder(new EmptyBorder(0, 5, 10, 10));
+
+        JTextField nameField = new JTextField();
+        nameField.setText("My Request");
+
+        JComboBox typeOfRequest = new JComboBox();
+        typeOfRequest.addItem("GET");
+        typeOfRequest.addItem("POST");
+        typeOfRequest.addItem("PUT");
+        typeOfRequest.addItem("PATCH");
+        typeOfRequest.addItem("DELETE");
+        typeOfRequest.addItem("OPTIONS");
+        typeOfRequest.addItem("HEAD");
+
+        JButton createButton = new JButton("Create");
+
+        namePanel.add(nameLabel, BorderLayout.NORTH);
+        namePanel.add(nameField, BorderLayout.CENTER);
+        namePanel.add(typeOfRequest, BorderLayout.EAST);
+
+        newRequestPanel.add(namePanel, BorderLayout.CENTER);
+        newRequestPanel.add(createButton, BorderLayout.SOUTH);
+
+        setNameFrame.add(newRequestPanel, BorderLayout.CENTER);
+        setNameFrame.setVisible(true);
+
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nameOfNewRequest = nameField.getText();
+                DefaultMutableTreeNode newRequest = new DefaultMutableTreeNode(nameOfNewRequest + " [" + typeOfRequest.getSelectedItem() + "]");
+
+                DefaultTreeModel model = (DefaultTreeModel) treeOfRequests.getModel();
+                model.insertNodeInto(newRequest, parentNode, parentNode.getChildCount());
+                treeOfRequests.scrollPathToVisible(new TreePath(newRequest.getPath()));
+
+                setNameFrame.setVisible(false);
+            }
+        });
+    }
 }
+
