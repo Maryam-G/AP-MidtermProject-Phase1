@@ -79,8 +79,11 @@ public class InsomniaView {
     private JPanel requestBodyPanel;
     private JRadioButton radioButtonFromData;
     private JRadioButton radioButtonJSON;
+    private JPanel fromDataPanel;
+    private JPanel jsonPanel;
     //header panel :
     private JPanel requestHeaderPanel;
+    private HeaderItemPanel lastHeaderItem;
 
 
     public InsomniaView() {
@@ -142,8 +145,11 @@ public class InsomniaView {
         requestBodyPanel = new JPanel();
         radioButtonFromData = new JRadioButton("From-Data");
         radioButtonJSON = new JRadioButton("JSON");
+        fromDataPanel = new JPanel();
+        jsonPanel = new JPanel();
         //header panel:
         requestHeaderPanel = new JPanel();
+        lastHeaderItem = new HeaderItemPanel();
 
         setInsomniaFrame();
     }
@@ -375,10 +381,23 @@ public class InsomniaView {
 
         // add panels to tabs of tabbedPane
         tabbedPane.add("Body", new JScrollPane(requestBodyPanel));
-        tabbedPane.add("Header", requestHeaderPanel);
+        tabbedPane.add("Header", new JScrollPane(requestHeaderPanel));
 
         panel2.add(tabbedPane, BorderLayout.CENTER);
 
+    }
+
+    public void setRequestHeaderPanel(){
+
+        HeaderItemPanel firstHeader = new HeaderItemPanel();
+        lastHeaderItem = firstHeader;
+
+        BoxLayout boxLayout = new BoxLayout(requestHeaderPanel, BoxLayout.Y_AXIS);
+        requestHeaderPanel.setLayout(boxLayout);
+
+        requestHeaderPanel.add(lastHeaderItem);
+        lastHeaderItem.getKeyField().addFocusListener(new FocusHandler());
+        lastHeaderItem.getValueField().addFocusListener(new FocusHandler());
     }
 
     public void setRequestBodyPanel(){
@@ -396,15 +415,14 @@ public class InsomniaView {
         requestBodyPanel.add(buttonGroupPanel, BorderLayout.NORTH);
     }
 
-    public void setRequestHeaderPanel(){
+    public void setFromDataPanel(){
 
-        HeaderItemPanel firstHeader = new HeaderItemPanel();
-
-        BoxLayout boxLayout = new BoxLayout(requestHeaderPanel, BoxLayout.Y_AXIS);
-        requestHeaderPanel.setLayout(boxLayout);
-
-        requestHeaderPanel.add(firstHeader);
     }
+
+    public void setJsonPanel(){
+
+    }
+
     //
 
 
@@ -861,6 +879,28 @@ public class InsomniaView {
                 setNameFrame.setVisible(false);
             }
         });
+    }
+
+    private class FocusHandler implements FocusListener{
+
+        @Override
+        public void focusGained(FocusEvent e) {
+            if(e.getSource().equals(lastHeaderItem.getKeyField()) || e.getSource().equals(lastHeaderItem.getValueField())) {
+                HeaderItemPanel newHeaderItem = new HeaderItemPanel();
+                lastHeaderItem = newHeaderItem;
+                lastHeaderItem.getKeyField().addFocusListener(this);
+                lastHeaderItem.getValueField().addFocusListener(this);
+
+                lastHeaderItem.setVisible(true);
+                requestHeaderPanel.add(lastHeaderItem);
+                panel2.updateUI();
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            System.out.println("focus lost");
+        }
     }
 
 }

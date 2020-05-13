@@ -29,7 +29,14 @@ public class HeaderItemPanel extends JPanel {
         keyField.setFont(new Font("Calibri", 45, 15));
         valueField.setFont(new Font("Calibri", 45, 15));
 
-        deleteButton.addActionListener(new DeleteButtonHandler());
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(e.getSource().equals(deleteButton)){
+                    HeaderItemPanel.this.setVisible(false);
+                }
+            }
+        });
 
         JPanel keyValuePanel = new JPanel();
         keyValuePanel.setLayout(new GridLayout());
@@ -55,13 +62,4 @@ public class HeaderItemPanel extends JPanel {
         return valueField;
     }
 
-    private class DeleteButtonHandler implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if(e.getSource().equals(deleteButton)){
-                HeaderItemPanel.this.setVisible(false);
-            }
-        }
-
-    }
 }
