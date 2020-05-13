@@ -8,15 +8,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.CellEditorListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import javax.swing.tree.*;
 import java.applet.Applet;
 import java.awt.*;
@@ -123,6 +114,9 @@ public class InsomniaView {
     private JRadioButton radioButtonPreview;
     private JPanel previewPanel;
 
+    private JRadioButton radioButtonJSON2;
+    private JPanel jsonPanel2;
+
     //header panel :
     private JPanel responseHeaderPanel;
     private JButton copyButton;
@@ -225,6 +219,9 @@ public class InsomniaView {
 
         radioButtonPreview = new JRadioButton("Preview");
         previewPanel = new JPanel();
+
+        radioButtonJSON2 = new JRadioButton("JSON");
+        jsonPanel2 = new JPanel();
 
         //header panel :
         responseHeaderPanel = new JPanel();
@@ -771,24 +768,59 @@ public class InsomniaView {
 
         radioButtonRaw.addActionListener(new RadioButtonHandler());
         radioButtonPreview.addActionListener(new RadioButtonHandler());
+        radioButtonJSON2.addActionListener(new RadioButtonHandler());
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(radioButtonRaw);
         buttonGroup.add(radioButtonPreview);
+        buttonGroup.add(radioButtonJSON2);
 
         JPanel buttonGroupPanel = new JPanel();
         buttonGroupPanel.setLayout(new FlowLayout());
         buttonGroupPanel.add(radioButtonRaw);
         buttonGroupPanel.add(radioButtonPreview);
+        buttonGroupPanel.add(radioButtonJSON2);
 
         responseBodyPanel.setLayout(new BorderLayout());
         responseBodyPanel.add(buttonGroupPanel, BorderLayout.NORTH);
+
+        setRawPanel();
+        setJsonPanel2();
+
+        responseBodyPanel.add(rawPanel, BorderLayout.CENTER);
+    }
+
+    public void setRawPanel(){
+
+        rawPanel.setLayout(new BorderLayout());
+
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("Calibri", 45, 15));
+        textArea.setText(" -[ Response ]-");
+        textArea.setEditable(false);
+
+        rawPanel.add(textArea, BorderLayout.CENTER);
+    }
+
+    public void setJsonPanel2(){
+
+        jsonPanel2.setLayout(new BorderLayout());
+
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("Calibri", 45, 15));
+        textArea.setText(" -[ Response ]-");
+        textArea.setEditable(false);
+
+        jsonPanel2.add(textArea, BorderLayout.CENTER);
     }
 
 
     //----------------------------------------------------------------> Show GUI
 
     public void showGUI() {
+        panel1.updateUI();
+        panel2.updateUI();
+        panel3.updateUI();
         insomniaFrame.setVisible(true);
     }
 
@@ -872,6 +904,7 @@ public class InsomniaView {
         responseBodyPanel.setBackground(newColor);
         rawPanel.setBackground(newColor);
         previewPanel.setBackground(newColor);
+        jsonPanel2.setBackground(newColor);
 
         responseHeaderPanel.setBackground(newColor);
     }
@@ -1138,11 +1171,19 @@ public class InsomniaView {
                 rawPanel.setVisible(true);
                 responseBodyPanel.add(rawPanel, BorderLayout.CENTER);
                 previewPanel.setVisible(false);
+                jsonPanel2.setVisible(false);
                 panel3.updateUI();
             }else if(radioButtonPreview.isSelected()){
                 previewPanel.setVisible(true);
                 responseBodyPanel.add(previewPanel, BorderLayout.CENTER);
                 rawPanel.setVisible(false);
+                jsonPanel2.setVisible(false);
+                panel3.updateUI();
+            }else if(radioButtonJSON2.isSelected()){
+                jsonPanel2.setVisible(true);
+                responseBodyPanel.add(jsonPanel2, BorderLayout.CENTER);
+                rawPanel.setVisible(false);
+                previewPanel.setVisible(false);
                 panel3.updateUI();
             }
 
