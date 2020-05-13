@@ -77,10 +77,18 @@ public class InsomniaView {
     private JTextField urlField;
     //body panel :
     private JPanel requestBodyPanel;
-    private JRadioButton radioButtonFromData;
-    private JRadioButton radioButtonJSON;
+
+    private JPanel noBodyPanel;
+    private JRadioButton radioButtonNoBody;
+
     private JPanel fromDataPanel;
+    private JRadioButton radioButtonFromData;
+
     private JPanel jsonPanel;
+    private JRadioButton radioButtonJSON;
+    private JSONItemPanel lastLine;
+    private int lineNumber;
+
     //header panel :
     private JPanel requestHeaderPanel;
     private HeaderItemPanel lastHeaderItem;
@@ -143,10 +151,18 @@ public class InsomniaView {
         urlField = new JTextField();
         //body panel:
         requestBodyPanel = new JPanel();
-        radioButtonFromData = new JRadioButton("From-Data");
-        radioButtonJSON = new JRadioButton("JSON");
+
+        noBodyPanel = new JPanel();
+        radioButtonNoBody = new JRadioButton("No-Body");
+
         fromDataPanel = new JPanel();
+        radioButtonFromData = new JRadioButton("From-Data");
+
         jsonPanel = new JPanel();
+        radioButtonJSON = new JRadioButton("JSON");
+        lineNumber = 1;
+        lastLine = new JSONItemPanel(lineNumber);
+
         //header panel:
         requestHeaderPanel = new JPanel();
         lastHeaderItem = new HeaderItemPanel();
@@ -402,17 +418,29 @@ public class InsomniaView {
 
     public void setRequestBodyPanel(){
 
+        radioButtonNoBody.setSelected(true);
+
+        radioButtonNoBody.addActionListener(new RadioButtonHandler());
+        radioButtonFromData.addActionListener(new RadioButtonHandler());
+        radioButtonJSON.addActionListener(new RadioButtonHandler());
+
         ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(radioButtonNoBody);
         buttonGroup.add(radioButtonFromData);
         buttonGroup.add(radioButtonJSON);
 
         JPanel buttonGroupPanel = new JPanel();
         buttonGroupPanel.setLayout(new FlowLayout());
+        buttonGroupPanel.add(radioButtonNoBody);
         buttonGroupPanel.add(radioButtonFromData);
         buttonGroupPanel.add(radioButtonJSON);
 
         requestBodyPanel.setLayout(new BorderLayout());
         requestBodyPanel.add(buttonGroupPanel, BorderLayout.NORTH);
+
+        setJsonPanel();
+        setFromDataPanel();
+
     }
 
     public void setFromDataPanel(){
@@ -421,243 +449,20 @@ public class InsomniaView {
 
     public void setJsonPanel(){
 
+        JSONItemPanel firstLine = new JSONItemPanel(lineNumber);
+
+        lastLine = firstLine;
+        lastLine.getTextField().addFocusListener(new FocusHandler());
+
+        BoxLayout boxLayout = new BoxLayout(jsonPanel, BoxLayout.Y_AXIS);
+        jsonPanel.setLayout(boxLayout);
+
+        jsonPanel.add(lastLine);
+
     }
 
     //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void demoPanel() {
-
-        JTabbedPane tabbedPane = new JTabbedPane();
-
-        //body:
-        JPanel bodyPanel = new JPanel();
-        bodyPanel.setLayout(new BorderLayout());
-        bodyPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
-
-        JPanel fromDataPanel = new JPanel();
-        JPanel jsonPanel = new JPanel();
-
-        JRadioButton typeofBodyRadioButton = new JRadioButton();
-        typeofBodyRadioButton.add("From-Data", fromDataPanel);
-        typeofBodyRadioButton.add("JSON", jsonPanel);
-        typeofBodyRadioButton.setVisible(true);
-
-        JScrollPane radioButtonContainer = new JScrollPane(typeofBodyRadioButton);
-
-        bodyPanel.add(radioButtonContainer, BorderLayout.CENTER);
-
-        // header:
-        JPanel headerPanel = new JPanel();
-
-        JTextField keyField = new JTextField("-[key]-");
-        JTextField valueField = new JTextField("-[value]-");
-        JButton deleteButton = new JButton("\uD83D\uDDD1");
-        JCheckBox checkBox = new JCheckBox();
-
-        keyField.setFont(new Font("Calibri", 45, 15));
-        valueField.setFont(new Font("Calibri", 45, 15));
-
-        JPanel keyValuePanel = new JPanel();
-        keyValuePanel.setLayout(new GridLayout());
-        keyValuePanel.add(keyField);
-        keyValuePanel.add(valueField);
-//        keyValuePanel.setPreferredSize(new Dimension(500, 500));
-//        keyValuePanel.setPreferredSize(new Dimension(400, 50));
-
-
-        JPanel headerItemPanel = new JPanel();
-        headerItemPanel.setLayout(new BorderLayout());
-
-        headerItemPanel.add(checkBox, BorderLayout.WEST);
-        headerItemPanel.add(keyValuePanel, BorderLayout.CENTER);
-        headerItemPanel.add(deleteButton, BorderLayout.EAST);
-
-//        headerItemPanel.setPreferredSize(new Dimension(20, headerItemPanel.getHeight()));
-//        headerItemPanel.setMaximumSize(new Dimension(20, headerItemPanel.getHeight()));
-
-//        JPanel headerPanel = new JPanel();
-//        headerPanel.setLayout(new GridLayout(12, 1));
-//        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.LINE_AXIS));
-//        BoxLayout boxLayout = new BoxLayout(headerPanel, BoxLayout.LINE_AXIS);
-//        headerPanel.setLayout(boxLayout);
-//        headerPanel.setLayout(new GridLayout(0, 1));
-
-//        GridBagLayout gridBagLayout = new GridBagLayout();
-//
-//        gridBagLayout.columnWeights = new double[] {1};
-//        gridBagLayout.rowWeights = new double[] {0};
-//
-//
-//
-//        GridBagConstraints constraints = new GridBagConstraints();
-//
-//        constraints.fill = GridBagConstraints.BOTH;
-////        constraints.ipady = GridBagConstraints.FIRST_LINE_START;
-////        constraints.insets = GridBagConstraints.BELOW_BASELINE
-//        constraints.anchor = GridBagConstraints.NORTHWEST;
-////        constraints.fill = GridBagConstraints.NORTH;
-//
-//
-//        constraints.gridwidth = 1;
-//        constraints.weightx = 0.5;
-//        constraints.weighty = 0.666;
-//        constraints.gridx = 0;
-//        constraints.gridy = 0;
-//        constraints.insets = new Insets(0, 10, 0, 10);
-//
-//        headerPanel.setLayout(gridBagLayout);
-//
-//        headerPanel.add(new JTextField(), constraints);
-//
-//        constraints.gridx = 0;
-//        constraints.gridy = 1;
-//
-//        headerPanel.add(headerItemPanel, constraints);
-//
-//
-//
-////
-////        headerItemPanel.setPreferredSize(new Dimension(headerPanel.getWidth(), headerItemPanel.getHeight()));
-////        headerItemPanel.setSize(60 , 80);
-////        headerItemPanel.revalidate();
-//////        headerItemPanel.setLayout(new Warp);
-////        headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-////
-////        headerPanel.add(headerItemPanel, constraints);
-
-        //'''''''''''''''''''''''''''''''''
-
-//        headerItemPanel.setPreferredSize(new Dimension(headerItemPanel.getWidth() , 30));
-//        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-//
-//        headerItemPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        headerItemPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-//
-//        headerPanel.add(headerItemPanel);
-
-        BoxLayout boxLayout = new BoxLayout(headerPanel, BoxLayout.Y_AXIS);
-        headerPanel.setLayout(boxLayout);
-
-        headerItemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-
-        headerPanel.add(headerItemPanel);
-
-
-        //''''''''''''''''''''''''''''''''''
-
-
-        ////////////////////////
-        tabbedPane.add(bodyPanel, "Body");
-        tabbedPane.add(headerPanel, "Header");
-        tabbedPane.setFont(new Font("Calibri", 45, 15));
-
-
-        panel2.add(tabbedPane, BorderLayout.CENTER);
-    }
-
-
-
-//     private class HeaderHandler implements ActionListener{
-//         @Override
-//         public void actionPerformed(ActionEvent e) {
-//             if()
-//         }
-//     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void buildBodyPanel(){
-
-        JPanel bodyPanel = new JPanel();
-        bodyPanel.setLayout(new BorderLayout());
-        bodyPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
-
-        JPanel fromDataPanel = new JPanel();
-        JPanel jsonPanel = new JPanel();
-
-        //----------------
-
-
-
-        //----------------
-
-        JRadioButton typeofBodyRadioButton = new JRadioButton();
-        typeofBodyRadioButton.add("From-Data", fromDataPanel);
-        typeofBodyRadioButton.add("JSON", jsonPanel);
-        typeofBodyRadioButton.setVisible(true);
-
-        JScrollPane radioButtonContainer = new JScrollPane(typeofBodyRadioButton);
-
-        bodyPanel.add(radioButtonContainer, BorderLayout.CENTER);
-        panel2.add(bodyPanel, BorderLayout.CENTER);
-
-    }
-
-    public void buildHeaderPanel(){
-
-        JTextField keyField = new JTextField("-[key]-");
-        JTextField valueField = new JTextField("-[value]-");
-        JButton deleteButton = new JButton("\uD83D\uDDD1");
-        JCheckBox checkBox = new JCheckBox();
-
-        keyField.setFont(new Font("Calibri", 45, 10));
-        valueField.setFont(new Font("Calibri", 45, 10));
-        deleteButton.setFont(new Font("Calibri", 45, 10));
-
-
-        JPanel keyValuePanel = new JPanel();
-        keyValuePanel.setLayout(new GridLayout());
-        keyValuePanel.add(keyField);
-        keyValuePanel.add(valueField);
-
-        JPanel headerPanel = new JPanel();
-        headerPanel.setLayout(new BorderLayout());
-
-        headerPanel.add(checkBox, BorderLayout.WEST);
-        headerPanel.add(keyValuePanel, BorderLayout.CENTER);
-        headerPanel.add(deleteButton, BorderLayout.EAST);
-
-
-
-    }
 
     //==============================================================> panel 3
 
@@ -669,11 +474,13 @@ public class InsomniaView {
         }
     }
 
+    //----------------------------------------------------------------> Show GUI
+
     public void showGUI() {
         insomniaFrame.setVisible(true);
     }
 
-    //----------------------------------------------------------------  Event Handling :
+    //---------------------------------------------------------------->  Event Handling
 
     private class MenuHandler implements ActionListener {
 
@@ -885,6 +692,7 @@ public class InsomniaView {
 
         @Override
         public void focusGained(FocusEvent e) {
+            // focus on  panel2 (request-panel) -> Header
             if(e.getSource().equals(lastHeaderItem.getKeyField()) || e.getSource().equals(lastHeaderItem.getValueField())) {
                 HeaderItemPanel newHeaderItem = new HeaderItemPanel();
                 lastHeaderItem = newHeaderItem;
@@ -895,13 +703,46 @@ public class InsomniaView {
                 requestHeaderPanel.add(lastHeaderItem);
                 panel2.updateUI();
             }
+            //focus on panel2 (request-panel) -> Body -> JSON
+            else if(e.getSource().equals(lastLine.getTextField())){
+                lineNumber++;
+                JSONItemPanel newLine = new JSONItemPanel(lineNumber);
+                lastLine = newLine;
+                lastLine.getTextField().addFocusListener(this);
+
+                lastLine.setVisible(true);
+                jsonPanel.add(lastLine);
+                panel2.updateUI();
+            }
         }
 
         @Override
         public void focusLost(FocusEvent e) {
-            System.out.println("focus lost");
         }
     }
 
+    private class RadioButtonHandler implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(";;");
+            if(radioButtonNoBody.isSelected()){
+                noBodyPanel.setVisible(true);
+                requestBodyPanel.add(noBodyPanel, BorderLayout.CENTER);
+                fromDataPanel.setVisible(false);
+                jsonPanel.setVisible(false);
+            }else if(radioButtonFromData.isSelected()){
+                fromDataPanel.setVisible(true);
+                requestBodyPanel.add(fromDataPanel, BorderLayout.CENTER);
+                noBodyPanel.setVisible(false);
+                jsonPanel.setVisible(false);
+            }else if(radioButtonJSON.isSelected()){
+                jsonPanel.setVisible(true);
+                requestBodyPanel.add(jsonPanel, BorderLayout.CENTER);
+                fromDataPanel.setVisible(false);
+                noBodyPanel.setVisible(false);
+            }
+            panel2.updateUI();
+        }
+    }
 }
 

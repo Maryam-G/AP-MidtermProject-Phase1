@@ -17,7 +17,6 @@ public class HeaderItemPanel extends JPanel {
     public HeaderItemPanel(){
         keyField = new JTextField("-[key]-");
         valueField = new JTextField("-[value]-");
-//        deleteButton = new JButton("\uD83D\uDDD1");
         deleteButton = new JButton("\u2716");
         checkBox = new JCheckBox();
 
