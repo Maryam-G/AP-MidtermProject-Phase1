@@ -1,19 +1,26 @@
 package com.company;
 
+import com.sun.xml.internal.messaging.saaj.soap.JpegDataContentHandler;
 import jdk.nashorn.internal.objects.Global;
+import sun.invoke.empty.Empty;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.tree.*;
+import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class InsomniaView {
@@ -62,6 +69,19 @@ public class InsomniaView {
 
     private DefaultMutableTreeNode allRequests;
     private JTree treeOfRequests;
+
+    // ======= > panel 2
+    // URL panel :
+    private JButton sendButton;
+    private JComboBox typeComboBox2;
+    private JTextField urlField;
+    //body panel :
+    private JPanel requestBodyPanel;
+    private JRadioButton radioButtonFromData;
+    private JRadioButton radioButtonJSON;
+    //header panel :
+    private JPanel requestHeaderPanel;
+
 
     public InsomniaView() {
         insomniaFrame = new JFrame("Insomnia");
@@ -112,6 +132,18 @@ public class InsomniaView {
 
         allRequests = new DefaultMutableTreeNode("All Request", true);
         treeOfRequests = new JTree(allRequests);
+
+        // ====== > panel 2
+        //URL panel :
+        sendButton = new JButton("Send");
+        typeComboBox2 = new JComboBox();
+        urlField = new JTextField();
+        //body panel:
+        requestBodyPanel = new JPanel();
+        radioButtonFromData = new JRadioButton("From-Data");
+        radioButtonJSON = new JRadioButton("JSON");
+        //header panel:
+        requestHeaderPanel = new JPanel();
 
         setInsomniaFrame();
     }
@@ -181,14 +213,14 @@ public class InsomniaView {
         view.add(toggleSidebar);
 
         //--------{ Help }-------
-        aboutText.setFont(new Font("Arial", 14, 14));
+        aboutText.setFont(new Font("Calibri", 14, 14));
         aboutText.setText("Hi, I'm Maryam Goli!\n\nMy student number : 9831054\nMy email : goli.mary.m@gmail.com\n\nI hope you enjoy the app :)\n\n~Maryam ");
         aboutText.setEditable(false);
         aboutFrame.setSize(300, 300);
         aboutFrame.setLocation(800, 400);
         aboutFrame.add(aboutText);
 
-        helpItemText.setFont(new Font("Arial", 14, 14));
+        helpItemText.setFont(new Font("Calibri", 14, 14));
         helpItemText.setText(" ... :)");
         helpItemText.setEditable(false);
         helpItemFrame.setSize(300, 300);
@@ -224,11 +256,7 @@ public class InsomniaView {
     //==============================================================> panel 1
 
     public void setPanel1() {
-//        if(darkTheme.isSelected()){
-//            panel1.setBackground(Color.DARK_GRAY);
-//        }else if(lightTheme.isSelected()){
-//            panel1.setBackground(Color.LIGHT_GRAY);
-//        }
+
         panel1.setMinimumSize(new Dimension(300, 600));
 
         // for label "Insomnia" on top of panel 1
@@ -252,10 +280,13 @@ public class InsomniaView {
         // for showing list of requests
         JPanel requestPanel = new JPanel();
         requestPanel.setLayout(new BorderLayout());
-        requestPanel.setBorder(new EmptyBorder(3, 3, 3, 3));
+        requestPanel.setBorder(new EmptyBorder(3, 3, 3, 0));
 
         // buttons for create new folder or new request
+        newFolder.setFont(new Font("Calibri", 45, 15));
+        newRequest.setFont(new Font("Calibri", 45, 15));
         JPanel newRequestButtons = new JPanel();
+        newRequestButtons.setBorder(new EmptyBorder(1, 0, 2, 0));
         newRequestButtons.setLayout(new GridLayout(1, 2, 2, 2));
 
         newRequest.addActionListener(new RequestButtonHandler());
@@ -303,6 +334,311 @@ public class InsomniaView {
         } else if (lightTheme.isSelected()) {
             panel2.setBackground(Color.LIGHT_GRAY);
         }
+
+        // create URL panel :
+        JPanel urlPanel = new JPanel();
+        urlPanel.setLayout(new BorderLayout());
+        urlPanel.setPreferredSize(new Dimension(urlPanel.getWidth(), 50));
+
+        typeComboBox2.setFont(new Font("Calibri", 45, 15));
+        typeComboBox2.addItem("GET");
+        typeComboBox2.addItem("POST");
+        typeComboBox2.addItem("PUT");
+        typeComboBox2.addItem("PATCH");
+        typeComboBox2.addItem("DELETE");
+        typeComboBox2.addItem("OPTIONS");
+        typeComboBox2.addItem("HEAD");
+
+        urlField.setText("Enter URL ...");
+        urlField.setFont(new Font("Calibri", 45, 15));
+
+        sendButton.setFont(new Font("Calibri", 45, 15));
+        sendButton.setHorizontalAlignment(JButton.CENTER);
+
+        urlPanel.add(typeComboBox2, BorderLayout.WEST);
+        urlPanel.add(urlField, BorderLayout.CENTER);
+        urlPanel.add(sendButton, BorderLayout.EAST);
+
+        urlPanel.setVisible(true);
+
+        panel2.setLayout(new BorderLayout());
+        panel2.add(urlPanel, BorderLayout.PAGE_START);
+
+        // create tabs for body and header
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // body :
+        setRequestBodyPanel();
+        //header:
+        setRequestHeaderPanel();
+
+        // add panels to tabs of tabbedPane
+        tabbedPane.add("Body", new JScrollPane(requestBodyPanel));
+        tabbedPane.add("Header", requestHeaderPanel);
+
+        panel2.add(tabbedPane, BorderLayout.CENTER);
+
+    }
+
+    public void setRequestBodyPanel(){
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(radioButtonFromData);
+        buttonGroup.add(radioButtonJSON);
+
+        JPanel buttonGroupPanel = new JPanel();
+        buttonGroupPanel.setLayout(new FlowLayout());
+        buttonGroupPanel.add(radioButtonFromData);
+        buttonGroupPanel.add(radioButtonJSON);
+
+        requestBodyPanel.setLayout(new BorderLayout());
+        requestBodyPanel.add(buttonGroupPanel, BorderLayout.NORTH);
+    }
+
+    public void setRequestHeaderPanel(){
+
+        HeaderItemPanel firstHeader = new HeaderItemPanel();
+
+        BoxLayout boxLayout = new BoxLayout(requestHeaderPanel, BoxLayout.Y_AXIS);
+        requestHeaderPanel.setLayout(boxLayout);
+
+        requestHeaderPanel.add(firstHeader);
+    }
+    //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void demoPanel() {
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        //body:
+        JPanel bodyPanel = new JPanel();
+        bodyPanel.setLayout(new BorderLayout());
+        bodyPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
+
+        JPanel fromDataPanel = new JPanel();
+        JPanel jsonPanel = new JPanel();
+
+        JRadioButton typeofBodyRadioButton = new JRadioButton();
+        typeofBodyRadioButton.add("From-Data", fromDataPanel);
+        typeofBodyRadioButton.add("JSON", jsonPanel);
+        typeofBodyRadioButton.setVisible(true);
+
+        JScrollPane radioButtonContainer = new JScrollPane(typeofBodyRadioButton);
+
+        bodyPanel.add(radioButtonContainer, BorderLayout.CENTER);
+
+        // header:
+        JPanel headerPanel = new JPanel();
+
+        JTextField keyField = new JTextField("-[key]-");
+        JTextField valueField = new JTextField("-[value]-");
+        JButton deleteButton = new JButton("\uD83D\uDDD1");
+        JCheckBox checkBox = new JCheckBox();
+
+        keyField.setFont(new Font("Calibri", 45, 15));
+        valueField.setFont(new Font("Calibri", 45, 15));
+
+        JPanel keyValuePanel = new JPanel();
+        keyValuePanel.setLayout(new GridLayout());
+        keyValuePanel.add(keyField);
+        keyValuePanel.add(valueField);
+//        keyValuePanel.setPreferredSize(new Dimension(500, 500));
+//        keyValuePanel.setPreferredSize(new Dimension(400, 50));
+
+
+        JPanel headerItemPanel = new JPanel();
+        headerItemPanel.setLayout(new BorderLayout());
+
+        headerItemPanel.add(checkBox, BorderLayout.WEST);
+        headerItemPanel.add(keyValuePanel, BorderLayout.CENTER);
+        headerItemPanel.add(deleteButton, BorderLayout.EAST);
+
+//        headerItemPanel.setPreferredSize(new Dimension(20, headerItemPanel.getHeight()));
+//        headerItemPanel.setMaximumSize(new Dimension(20, headerItemPanel.getHeight()));
+
+//        JPanel headerPanel = new JPanel();
+//        headerPanel.setLayout(new GridLayout(12, 1));
+//        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.LINE_AXIS));
+//        BoxLayout boxLayout = new BoxLayout(headerPanel, BoxLayout.LINE_AXIS);
+//        headerPanel.setLayout(boxLayout);
+//        headerPanel.setLayout(new GridLayout(0, 1));
+
+//        GridBagLayout gridBagLayout = new GridBagLayout();
+//
+//        gridBagLayout.columnWeights = new double[] {1};
+//        gridBagLayout.rowWeights = new double[] {0};
+//
+//
+//
+//        GridBagConstraints constraints = new GridBagConstraints();
+//
+//        constraints.fill = GridBagConstraints.BOTH;
+////        constraints.ipady = GridBagConstraints.FIRST_LINE_START;
+////        constraints.insets = GridBagConstraints.BELOW_BASELINE
+//        constraints.anchor = GridBagConstraints.NORTHWEST;
+////        constraints.fill = GridBagConstraints.NORTH;
+//
+//
+//        constraints.gridwidth = 1;
+//        constraints.weightx = 0.5;
+//        constraints.weighty = 0.666;
+//        constraints.gridx = 0;
+//        constraints.gridy = 0;
+//        constraints.insets = new Insets(0, 10, 0, 10);
+//
+//        headerPanel.setLayout(gridBagLayout);
+//
+//        headerPanel.add(new JTextField(), constraints);
+//
+//        constraints.gridx = 0;
+//        constraints.gridy = 1;
+//
+//        headerPanel.add(headerItemPanel, constraints);
+//
+//
+//
+////
+////        headerItemPanel.setPreferredSize(new Dimension(headerPanel.getWidth(), headerItemPanel.getHeight()));
+////        headerItemPanel.setSize(60 , 80);
+////        headerItemPanel.revalidate();
+//////        headerItemPanel.setLayout(new Warp);
+////        headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+////
+////        headerPanel.add(headerItemPanel, constraints);
+
+        //'''''''''''''''''''''''''''''''''
+
+//        headerItemPanel.setPreferredSize(new Dimension(headerItemPanel.getWidth() , 30));
+//        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+//
+//        headerItemPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+//        headerItemPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+//
+//        headerPanel.add(headerItemPanel);
+
+        BoxLayout boxLayout = new BoxLayout(headerPanel, BoxLayout.Y_AXIS);
+        headerPanel.setLayout(boxLayout);
+
+        headerItemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+
+        headerPanel.add(headerItemPanel);
+
+
+        //''''''''''''''''''''''''''''''''''
+
+
+        ////////////////////////
+        tabbedPane.add(bodyPanel, "Body");
+        tabbedPane.add(headerPanel, "Header");
+        tabbedPane.setFont(new Font("Calibri", 45, 15));
+
+
+        panel2.add(tabbedPane, BorderLayout.CENTER);
+    }
+
+
+
+//     private class HeaderHandler implements ActionListener{
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             if()
+//         }
+//     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void buildBodyPanel(){
+
+        JPanel bodyPanel = new JPanel();
+        bodyPanel.setLayout(new BorderLayout());
+        bodyPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
+
+        JPanel fromDataPanel = new JPanel();
+        JPanel jsonPanel = new JPanel();
+
+        //----------------
+
+
+
+        //----------------
+
+        JRadioButton typeofBodyRadioButton = new JRadioButton();
+        typeofBodyRadioButton.add("From-Data", fromDataPanel);
+        typeofBodyRadioButton.add("JSON", jsonPanel);
+        typeofBodyRadioButton.setVisible(true);
+
+        JScrollPane radioButtonContainer = new JScrollPane(typeofBodyRadioButton);
+
+        bodyPanel.add(radioButtonContainer, BorderLayout.CENTER);
+        panel2.add(bodyPanel, BorderLayout.CENTER);
+
+    }
+
+    public void buildHeaderPanel(){
+
+        JTextField keyField = new JTextField("-[key]-");
+        JTextField valueField = new JTextField("-[value]-");
+        JButton deleteButton = new JButton("\uD83D\uDDD1");
+        JCheckBox checkBox = new JCheckBox();
+
+        keyField.setFont(new Font("Calibri", 45, 10));
+        valueField.setFont(new Font("Calibri", 45, 10));
+        deleteButton.setFont(new Font("Calibri", 45, 10));
+
+
+        JPanel keyValuePanel = new JPanel();
+        keyValuePanel.setLayout(new GridLayout());
+        keyValuePanel.add(keyField);
+        keyValuePanel.add(valueField);
+
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BorderLayout());
+
+        headerPanel.add(checkBox, BorderLayout.WEST);
+        headerPanel.add(keyValuePanel, BorderLayout.CENTER);
+        headerPanel.add(deleteButton, BorderLayout.EAST);
+
+
+
     }
 
     //==============================================================> panel 3
@@ -319,6 +655,7 @@ public class InsomniaView {
         insomniaFrame.setVisible(true);
     }
 
+    //----------------------------------------------------------------  Event Handling :
 
     private class MenuHandler implements ActionListener {
 
@@ -525,5 +862,6 @@ public class InsomniaView {
             }
         });
     }
+
 }
 

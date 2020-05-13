@@ -20,5 +20,8 @@ public class Main {
         InsomniaView insomnia = new InsomniaView();
         insomnia.showGUI();
 
+//        String s = "\uD83D\uDDD1";
+//        System.out.println(s.);
+
     }
 }
