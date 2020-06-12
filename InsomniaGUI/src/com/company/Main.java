@@ -1,8 +1,11 @@
 package com.company;
 
 import com.company.gui.InsomniaFrame;
+import com.company.gui.KeyValueItemPanel;
 
+import javax.crypto.spec.PSource;
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -21,6 +24,9 @@ public class Main {
 
         InsomniaFrame frame = new InsomniaFrame();
         frame.setVisible(true);
+
     }
+
+
 
 }
