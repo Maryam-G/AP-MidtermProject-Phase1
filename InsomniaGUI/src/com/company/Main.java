@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.gui.InsomniaFrame;
+
 import javax.swing.*;
 
 public class Main {
@@ -16,6 +18,9 @@ public class Main {
         } catch (Exception e) {
             // If Nimbus is not available, you can set the GUI to another look and feel.
         }
+
+        InsomniaFrame frame = new InsomniaFrame();
+        frame.setVisible(true);
     }
 
 }
