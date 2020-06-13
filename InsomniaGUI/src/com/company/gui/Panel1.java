@@ -92,7 +92,6 @@ public class Panel1 extends JPanel {
         this.add(panelForCollections, BorderLayout.CENTER);
     }
 
-    // event handling :
     private class ButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -235,6 +234,18 @@ public class Panel1 extends JPanel {
                     setNameFrame.setVisible(false);
                 }
             });
+        }
+    }
+
+    public void setThemeForPanel1(Color newColor){
+        treeOfCollections.setBackground(newColor);
+        final DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) (treeOfCollections.getCellRenderer());
+        if (newColor.equals(Color.DARK_GRAY)) {
+            renderer.setTextNonSelectionColor(Color.WHITE);
+            renderer.setTextSelectionColor(new Color(197, 138, 255));
+        } else {
+            renderer.setTextNonSelectionColor(Color.BLACK);
+            renderer.setTextSelectionColor(new Color(197, 138, 255));
         }
     }
 }

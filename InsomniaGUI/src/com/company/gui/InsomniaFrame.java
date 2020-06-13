@@ -1,6 +1,7 @@
 package com.company.gui;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 public class InsomniaFrame extends JFrame{
@@ -44,8 +45,22 @@ public class InsomniaFrame extends JFrame{
         splitPane.setDividerLocation(300);
         splitPane.setDividerSize(2);
 
-//        setTheme(Color.DARK_GRAY);
+        setTheme(Color.DARK_GRAY);
 
         this.add(splitPane, BorderLayout.CENTER);
     }
+
+    public void setTheme(Color newColor) {
+        this.setBackground(newColor);
+
+        panel1.setBackground(newColor);
+        panel1.setThemeForPanel1(newColor);
+
+        panel2.setBackground(newColor);
+        panel2.setThemeForPanel2(newColor);
+
+        panel3.setBackground(newColor);
+        panel3.setThemeForPanel3(newColor);
+    }
+
 }

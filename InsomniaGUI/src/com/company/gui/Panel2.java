@@ -1,12 +1,14 @@
 package com.company.gui;
 
 import javax.swing.*;
+import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Panel2 extends JPanel {
 
@@ -23,11 +25,11 @@ public class Panel2 extends JPanel {
 
     private JPanel formDataPanel;
     private JRadioButton radioButtonFormData;
-    private ArrayList<KeyValueItemPanel> bodyList;
+    private ArrayList<BodyItemPanel> bodyList;
 
     // headers panel :
     private JPanel requestHeaderPanel;
-    private ArrayList<KeyValueItemPanel> headersList;
+    private ArrayList<HeaderItemPanel> headersList;
 
     public Panel2(){
         this.setLayout(new BorderLayout());
@@ -82,7 +84,7 @@ public class Panel2 extends JPanel {
     public void addHeadersPanel(){
         requestHeaderPanel = new JPanel();
 
-        KeyValueItemPanel firstHeader = new KeyValueItemPanel();
+        HeaderItemPanel firstHeader = new HeaderItemPanel();
 
         BoxLayout boxLayout = new BoxLayout(requestHeaderPanel, BoxLayout.Y_AXIS);
         requestHeaderPanel.setLayout(boxLayout);
@@ -124,7 +126,7 @@ public class Panel2 extends JPanel {
 
     public void setFormDataPanel() {
 
-        KeyValueItemPanel firstFormDataItem = new KeyValueItemPanel();
+        BodyItemPanel firstFormDataItem = new BodyItemPanel();
 
         formDataPanel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(formDataPanel, BoxLayout.Y_AXIS);
@@ -148,14 +150,14 @@ public class Panel2 extends JPanel {
                 System.out.println("l");
             }
 
-            KeyValueItemPanel lastHeaderItem = new KeyValueItemPanel();
+            HeaderItemPanel lastHeaderItem = new HeaderItemPanel();
             lastHeaderItem = headersList.get(headersList.size()-1);
-            KeyValueItemPanel lastFormDataItemPanel = new KeyValueItemPanel();
+            BodyItemPanel lastFormDataItemPanel = new BodyItemPanel();
             lastFormDataItemPanel = bodyList.get(bodyList.size()-1);
 
             // focus on request headers panel -> Headers
             if (e.getSource().equals(lastHeaderItem.getKeyField()) || e.getSource().equals(lastHeaderItem.getValueField())) {
-                KeyValueItemPanel newHeaderItem = new KeyValueItemPanel();
+                HeaderItemPanel newHeaderItem = new HeaderItemPanel();
                 newHeaderItem.getKeyField().addFocusListener(this);
                 newHeaderItem.getValueField().addFocusListener(this);
                 newHeaderItem.setVisible(true);
@@ -168,7 +170,7 @@ public class Panel2 extends JPanel {
 
             //focus on request body panel -> Form-Data
             else if (e.getSource().equals(lastFormDataItemPanel.getKeyField()) || e.getSource().equals(lastFormDataItemPanel.getValueField())) {
-                KeyValueItemPanel newFormDataItem = new KeyValueItemPanel();
+                BodyItemPanel newFormDataItem = new BodyItemPanel();
                 newFormDataItem.getKeyField().addFocusListener(this);
                 newFormDataItem.getValueField().addFocusListener(this);
                 newFormDataItem.setVisible(true);
@@ -203,4 +205,145 @@ public class Panel2 extends JPanel {
         }
     }
 
+    private class HeaderItemPanel extends JPanel{
+
+        private JTextField keyField;
+        private JTextField valueField;
+        private JButton deleteButton;
+        private JCheckBox checkBox;
+
+        public HeaderItemPanel(){
+            keyField = new JTextField("-[key]-");
+            valueField = new JTextField("-[value]-");
+            deleteButton = new JButton("\u2716");
+            checkBox = new JCheckBox();
+
+            setPanel();
+        }
+
+        public void setPanel(){
+
+            keyField.setFont(new Font("Calibri", 45, 15));
+            valueField.setFont(new Font("Calibri", 45, 15));
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(e.getSource().equals(deleteButton)){
+                        if(headersList.size() > 1){
+                            HeaderItemPanel.this.setVisible(false);
+                            Iterator<HeaderItemPanel> iterator = headersList.iterator();
+                            while (iterator.hasNext()){
+                                if(iterator.next().equals(HeaderItemPanel.this)){
+                                    iterator.remove();
+                                    break;
+                                }
+                            }
+
+                            headersList.get(headersList.size()-1).getKeyField().addFocusListener(new FocusHandler());
+                            headersList.get(headersList.size()-1).getValueField().addFocusListener(new FocusHandler());
+
+                        }
+                    }
+                }
+            });
+
+            JPanel keyValuePanel = new JPanel();
+            keyValuePanel.setLayout(new GridLayout());
+            keyValuePanel.add(keyField);
+            keyValuePanel.add(valueField);
+
+            this.setLayout(new BorderLayout());
+            this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+            this.add(checkBox, BorderLayout.WEST);
+            this.add(keyValuePanel, BorderLayout.CENTER);
+            this.add(deleteButton, BorderLayout.EAST);
+
+            this.setVisible(true);
+        }
+
+        public JTextField getKeyField() {
+            return keyField;
+        }
+
+        public JTextField getValueField() {
+            return valueField;
+        }
+    }
+
+    private class BodyItemPanel extends JPanel{
+
+        private JTextField keyField;
+        private JTextField valueField;
+        private JButton deleteButton;
+        private JCheckBox checkBox;
+
+        public BodyItemPanel(){
+            keyField = new JTextField("-[key]-");
+            valueField = new JTextField("-[value]-");
+            deleteButton = new JButton("\u2716");
+            checkBox = new JCheckBox();
+
+            setPanel();
+        }
+
+        public void setPanel(){
+
+            keyField.setFont(new Font("Calibri", 45, 15));
+            valueField.setFont(new Font("Calibri", 45, 15));
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(e.getSource().equals(deleteButton)){
+                        if(bodyList.size() > 1){
+                            BodyItemPanel.this.setVisible(false);
+                            Iterator<BodyItemPanel> iterator = bodyList.iterator();
+                            while (iterator.hasNext()){
+                                if(iterator.next().equals(BodyItemPanel.this)){
+                                    iterator.remove();
+                                    break;
+                                }
+                            }
+
+                            bodyList.get(bodyList.size()-1).getKeyField().addFocusListener(new FocusHandler());
+                            bodyList.get(bodyList.size()-1).getValueField().addFocusListener(new FocusHandler());
+
+                        }
+                    }
+                }
+            });
+
+            JPanel keyValuePanel = new JPanel();
+            keyValuePanel.setLayout(new GridLayout());
+            keyValuePanel.add(keyField);
+            keyValuePanel.add(valueField);
+
+            this.setLayout(new BorderLayout());
+            this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+            this.add(checkBox, BorderLayout.WEST);
+            this.add(keyValuePanel, BorderLayout.CENTER);
+            this.add(deleteButton, BorderLayout.EAST);
+
+            this.setVisible(true);
+        }
+
+        public JTextField getKeyField() {
+            return keyField;
+        }
+
+        public JTextField getValueField() {
+            return valueField;
+        }
+    }
+
+    public void setThemeForPanel2(Color newColor){
+        requestBodyPanel.setBackground(newColor);
+        noBodyPanel.setBackground(newColor);
+        formDataPanel.setBackground(newColor);
+
+        requestHeaderPanel.setBackground(newColor);
+    }
 }
