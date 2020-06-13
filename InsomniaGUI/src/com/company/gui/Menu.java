@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 /**
  * A class for showing menuBar in insomnia frame
  * menu items : Application : [Options & Exit]
- *              View : [ToggleFullScreen & ToggleSidebar]
- *              Help : [About & Help]
+ *              View :        [ToggleFullScreen & ToggleSidebar]
+ *              Help :        [About & Help]
  *
  * @author Maryam Goli
  */
