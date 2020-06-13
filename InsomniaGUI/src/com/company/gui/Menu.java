@@ -6,6 +6,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+/**
+ * A class for showing menuBar in insomnia frame
+ * menu items : Application : [Options & Exit]
+ *              View : [ToggleFullScreen & ToggleSidebar]
+ *              Help : [About & Help]
+ *
+ * @author Maryam Goli
+ */
 public class Menu extends JMenuBar {
 
     private JMenu application;
@@ -17,8 +25,6 @@ public class Menu extends JMenuBar {
     private JMenuItem exit;
 
     private JFrame optionsFrame;
-    private JCheckBox enable;
-    private JCheckBox disable;
     private JCheckBox exitFromApp;
     private JCheckBox hideOnSystemTray;
     private JCheckBox lightTheme;
@@ -27,9 +33,6 @@ public class Menu extends JMenuBar {
     //view menu:
     private JMenuItem toggleFullScreen;
     private JMenuItem toggleSidebar;
-
-    private boolean visibilityOfPanel1;
-    private boolean isFullScreen;
 
     //help menu:
     private JMenuItem helpItem;
@@ -40,6 +43,9 @@ public class Menu extends JMenuBar {
     private JTextArea aboutText;
     private JFrame aboutFrame;
 
+    /**
+     * constructor method
+     */
     public Menu(){
         initApplicationMenu();
         initViewMenu();
@@ -50,6 +56,9 @@ public class Menu extends JMenuBar {
         this.add(help);
     }
 
+    /**
+     * init menu item "Application"
+     */
     public void initApplicationMenu(){
         application = new JMenu("Application");
         application.setFont(new Font("Calibri", 14, 15));
@@ -58,48 +67,30 @@ public class Menu extends JMenuBar {
         options = new JMenuItem("Options");
         options.setFont(new Font("Calibri", 14, 15));
         options.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
-//        options.addActionListener(new MenuHandler());
         setOptionsFrame();
 
         exit = new JMenuItem("Exit");
         exit.setFont(new Font("Calibri", 14, 15));
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
-//        exit.addActionListener(new MenuHandler());
 
         application.add(options);
         application.add(exit);
     }
 
+    /**
+     * build frame for showing options
+     */
     public void setOptionsFrame(){
         optionsFrame = new JFrame("Options");
         optionsFrame.setSize(new Dimension(300, 300));
-        optionsFrame.setLayout(new GridLayout(3, 1, 1, 1));
+        optionsFrame.setLayout(new GridLayout(2, 1, 2, 1));
         optionsFrame.setLocation(800, 400);
         optionsFrame.setResizable(false);
 
-        enable = new JCheckBox("Enable");
-//        enable.addItemListener(new CheckBoxHandler());
-        disable = new JCheckBox("Disable");
-//        disable.addItemListener(new CheckBoxHandler());
         lightTheme = new JCheckBox("Light Theme");
-//        lightTheme.addItemListener(new CheckBoxHandler());
         darkTheme = new JCheckBox("Dark Theme", true);
-//        darkTheme.addItemListener(new CheckBoxHandler());
         exitFromApp = new JCheckBox("Exit From App", true);
-//        exitFromApp.addItemListener(new CheckBoxHandler());
         hideOnSystemTray = new JCheckBox("Hide On System Tray");
-//        hideOnSystemTray.addItemListener(new CheckBoxHandler());
-
-        JPanel followRedirectPanel = new JPanel();
-        followRedirectPanel.setLayout(new GridLayout(2, 1, 1, 1));
-        followRedirectPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY
-                , 1, true), " [ Follow Redirect ]", TitledBorder.LEFT, TitledBorder.TOP));
-        ButtonGroup buttonGroup1 = new ButtonGroup();
-        buttonGroup1.add(enable);
-        buttonGroup1.add(disable);
-
-        followRedirectPanel.add(enable);
-        followRedirectPanel.add(disable);
 
         JPanel exitPanel = new JPanel();
         exitPanel.setLayout(new GridLayout(2, 1, 1, 1));
@@ -123,12 +114,14 @@ public class Menu extends JMenuBar {
         themePanel.add(lightTheme);
         themePanel.add(darkTheme);
 
-        optionsFrame.add(followRedirectPanel);
         optionsFrame.add(exitPanel);
         optionsFrame.add(themePanel);
 
     }
 
+    /**
+     * init menu item "View"
+     */
     public void initViewMenu(){
         view = new JMenu("View");
         view.setFont(new Font("Calibri", 14, 15));
@@ -137,20 +130,18 @@ public class Menu extends JMenuBar {
         toggleFullScreen = new JMenuItem("Toggle Full Screen");
         toggleFullScreen.setFont(new Font("Calibri", 14, 15));
         toggleFullScreen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
-//        toggleFullScreen.addActionListener(new MenuHandler());
 
         toggleSidebar = new JMenuItem("Toggle Sidebar");
         toggleSidebar.setFont(new Font("Calibri", 14, 15));
         toggleSidebar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
-//        toggleSidebar.addActionListener(new MenuHandler());
-
-        visibilityOfPanel1 = true;
-        isFullScreen = false;
 
         view.add(toggleFullScreen);
         view.add(toggleSidebar);
     }
 
+    /**
+     * init menu item "Help"
+     */
     public void initHelpMenu(){
         help = new JMenu("Help");
         help.setFont(new Font("Calibri", 14, 15));
@@ -159,12 +150,10 @@ public class Menu extends JMenuBar {
         helpItem = new JMenuItem("Help");
         helpItem.setFont(new Font("Calibri", 14, 15));
         helpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
-//        helpItem.addActionListener(new MenuHandler());
 
         about = new JMenuItem("About");
         about.setFont(new Font("Calibri", 14, 15));
         about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        about.addActionListener(new MenuHandler());
 
         setHelpFrame();
 
@@ -172,6 +161,9 @@ public class Menu extends JMenuBar {
         help.add(about);
     }
 
+    /**
+     * build frame for showing help-text and about-text
+     */
     public void setHelpFrame(){
         aboutText = new JTextArea();
         aboutText.setFont(new Font("Calibri", 14, 14));
@@ -190,6 +182,110 @@ public class Menu extends JMenuBar {
         helpItemFrame.setSize(300, 300);
         helpItemFrame.setLocation(800, 400);
         helpItemFrame.add(helpItemText);
+    }
+
+    /**
+     * get menuItem "Options"
+     * @return options field
+     */
+    public JMenuItem getOptions() {
+        return options;
+    }
+
+    /**
+     * get Options frame
+     * @return optionsFrame field
+     */
+    public JFrame getOptionsFrame() {
+        return optionsFrame;
+    }
+
+    /**
+     * get menuItem "Exit"
+     * @return exit field
+     */
+    public JMenuItem getExit() {
+        return exit;
+    }
+
+    /**
+     * get menuItem "About"
+     * @return about field
+     */
+    public JMenuItem getAbout() {
+        return about;
+    }
+
+    /**
+     * get about frame
+     * @return aboutFrame field
+     */
+    public JFrame getAboutFrame() {
+        return aboutFrame;
+    }
+
+    /**
+     * get menuItem "Help"
+     * @return helpItem field
+     */
+    public JMenuItem getHelpItem() {
+        return helpItem;
+    }
+
+    /**
+     * get helpItem frame
+     * @return helpItemFrame field
+     */
+    public JFrame getHelpItemFrame() {
+        return helpItemFrame;
+    }
+
+    /**
+     * get menuItem "ToggleFullScreen"
+     * @return toggleFullScreen field
+     */
+    public JMenuItem getToggleFullScreen() {
+        return toggleFullScreen;
+    }
+
+    /**
+     * get menuItem "ToggleSidebar"
+     * @return toggleSidebar field
+     */
+    public JMenuItem getToggleSidebar() {
+        return toggleSidebar;
+    }
+
+    /**
+     * get checkBox "Dark Theme"
+     * @return darkTheme field
+     */
+    public JCheckBox getDarkTheme() {
+        return darkTheme;
+    }
+
+    /**
+     * get checkBox "Light Theme"
+     * @return lightTheme field
+     */
+    public JCheckBox getLightTheme() {
+        return lightTheme;
+    }
+
+    /**
+     * get checkBox "Exit From App"
+     * @return exitFromApp field
+     */
+    public JCheckBox getExitFromApp() {
+        return exitFromApp;
+    }
+
+    /**
+     * get checkBox "Hide On System Tray"
+     * @return hideOnSystemTray field
+     */
+    public JCheckBox getHideOnSystemTray() {
+        return hideOnSystemTray;
     }
 }
 

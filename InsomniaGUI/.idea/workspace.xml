@@ -26,7 +26,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+    <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="untitled39" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -36,11 +36,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Main" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -57,7 +52,8 @@
       <workItem from="1591311626256" duration="17200000" />
       <workItem from="1591749409792" duration="618000" />
       <workItem from="1591937440037" duration="13458000" />
-      <workItem from="1592006901457" duration="5347000" />
+      <workItem from="1592006901457" duration="7367000" />
+      <workItem from="1592076001002" duration="6946000" />
     </task>
     <servers />
   </component>
@@ -69,26 +65,26 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="574" y="122" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1592053220636" />
-    <state width="738" height="74" key="GridCell.Tab.0.bottom" timestamp="1592054627792">
+    <state width="1493" height="106" key="GridCell.Tab.0.bottom" timestamp="1592084144361">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="738" height="74" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1592054627792" />
-    <state width="738" height="74" key="GridCell.Tab.0.center" timestamp="1592054627790">
+    <state width="1493" height="106" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1592084144361" />
+    <state width="1493" height="106" key="GridCell.Tab.0.center" timestamp="1592084144360">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="738" height="74" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1592054627790" />
-    <state width="738" height="74" key="GridCell.Tab.0.left" timestamp="1592054627789">
+    <state width="1493" height="106" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1592084144360" />
+    <state width="1493" height="106" key="GridCell.Tab.0.left" timestamp="1592084144360">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="738" height="74" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1592054627789" />
-    <state width="738" height="74" key="GridCell.Tab.0.right" timestamp="1592054627791">
+    <state width="1493" height="106" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1592084144360" />
+    <state width="1493" height="106" key="GridCell.Tab.0.right" timestamp="1592084144361">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="738" height="74" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1592054627791" />
-    <state x="68" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1591749434315">
+    <state width="1493" height="106" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1592084144361" />
+    <state x="68" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1592077208043">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="68" y="240" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1591749434315" />
+    <state x="68" y="240" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1592077208043" />
     <state x="0" y="39" key="new project wizard" timestamp="1591969977183">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

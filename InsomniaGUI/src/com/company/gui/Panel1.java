@@ -2,12 +2,16 @@ package com.company.gui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * A class for showing panel 1 with list of requests and collections
+ *
+ * @author Maryam Goli
+ */
 public class Panel1 extends JPanel {
 
     private JPanel panelForCollections;
@@ -20,6 +24,9 @@ public class Panel1 extends JPanel {
     private DefaultMutableTreeNode allCollections;
     private JTree treeOfCollections;
 
+    /**
+     * constructor method
+     */
     public Panel1() {
         this.setMinimumSize(new Dimension(300, 600));
         this.setLayout(new BorderLayout());
@@ -28,6 +35,9 @@ public class Panel1 extends JPanel {
         addPanelForCollections();
     }
 
+    /**
+     * add label "Insomnia" at the top of panel 1
+     */
     public void addInsomniaLabel() {
         JPanel panelForInsomniaLabel = new JPanel();
         panelForInsomniaLabel.setLayout(new BorderLayout());
@@ -45,6 +55,9 @@ public class Panel1 extends JPanel {
         this.add(panelForInsomniaLabel, BorderLayout.PAGE_START);
     }
 
+    /**
+     * add buttons for create new collection and new request
+     */
     public void addButtons() {
         newCollection = new JButton("New Collection");
         newCollection.setFont(new Font("Calibri", 45, 15));
@@ -64,6 +77,9 @@ public class Panel1 extends JPanel {
         panelForCollections.add(panelForButtons, BorderLayout.NORTH);
     }
 
+    /**
+     * add list of all collections
+     */
     public void addListOfCollections() {
         allCollections = new DefaultMutableTreeNode("All Collections", true);
         DefaultMutableTreeNode firstRequest = new DefaultMutableTreeNode("FirstRequest");
@@ -81,6 +97,9 @@ public class Panel1 extends JPanel {
         panelForCollections.add(new JScrollPane(treeOfCollections), BorderLayout.CENTER);
     }
 
+    /**
+     * add panel for list of all collections to panel 1
+     */
     public void addPanelForCollections() {
         panelForCollections = new JPanel();
         panelForCollections.setLayout(new BorderLayout(1, 1));
@@ -92,6 +111,9 @@ public class Panel1 extends JPanel {
         this.add(panelForCollections, BorderLayout.CENTER);
     }
 
+    /**
+     * An inner class for handling events that related to buttons
+     */
     private class ButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -202,18 +224,10 @@ public class Panel1 extends JPanel {
             JTextField nameField = new JTextField();
             nameField.setText("MyRequest");
 
-            JComboBox typeOfRequest = new JComboBox();
-            typeOfRequest.addItem("GET");
-            typeOfRequest.addItem("POST");
-            typeOfRequest.addItem("PUT");
-            typeOfRequest.addItem("PATCH");
-            typeOfRequest.addItem("DELETE");
-
             JButton createButton = new JButton("Create");
 
             namePanel.add(nameLabel, BorderLayout.NORTH);
             namePanel.add(nameField, BorderLayout.CENTER);
-            namePanel.add(typeOfRequest, BorderLayout.EAST);
 
             newRequestPanel.add(namePanel, BorderLayout.CENTER);
             newRequestPanel.add(createButton, BorderLayout.SOUTH);
@@ -237,6 +251,10 @@ public class Panel1 extends JPanel {
         }
     }
 
+    /**
+     * set theme for panel 1
+     * @param newColor new color
+     */
     public void setThemeForPanel1(Color newColor){
         treeOfCollections.setBackground(newColor);
         final DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) (treeOfCollections.getCellRenderer());

@@ -1,7 +1,6 @@
 package com.company.gui;
 
 import javax.swing.*;
-import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +9,11 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * A class for showing panel 2 and selected request with its headers and body
+ *
+ * @author Maryam Goli
+ */
 public class Panel2 extends JPanel {
 
     // URL panel :
@@ -31,6 +35,9 @@ public class Panel2 extends JPanel {
     private JPanel requestHeaderPanel;
     private ArrayList<HeaderItemPanel> headersList;
 
+    /**
+     * constructor method
+     */
     public Panel2(){
         this.setLayout(new BorderLayout());
 
@@ -53,6 +60,9 @@ public class Panel2 extends JPanel {
 
     }
 
+    /**
+     * add panel for write url address
+     */
     public void addUrlPanel(){
         JPanel urlPanel = new JPanel();
         urlPanel.setLayout(new BorderLayout());
@@ -81,6 +91,9 @@ public class Panel2 extends JPanel {
         this.add(urlPanel, BorderLayout.PAGE_START);
     }
 
+    /**
+     * add panel for showing request headers with key and value
+     */
     public void addHeadersPanel(){
         requestHeaderPanel = new JPanel();
 
@@ -97,6 +110,9 @@ public class Panel2 extends JPanel {
         firstHeader.getValueField().addFocusListener(new FocusHandler());
     }
 
+    /**
+     * add panel for showing request body [two tabs : No-Body & Form-Data]
+     */
     public void addBodyPanel(){
         requestBodyPanel = new JPanel();
 
@@ -124,6 +140,9 @@ public class Panel2 extends JPanel {
         requestBodyPanel.add(new JScrollPane(buttonGroupPanel), BorderLayout.NORTH);
     }
 
+    /**
+     * set panel for showing Multipart/Form-Data body
+     */
     public void setFormDataPanel() {
 
         BodyItemPanel firstFormDataItem = new BodyItemPanel();
@@ -142,6 +161,9 @@ public class Panel2 extends JPanel {
         radioButtonFormData = new JRadioButton("Form-Data");
     }
 
+    /**
+     * An inner class for handling events that related to focusing on header items or body items
+     */
     private class FocusHandler implements FocusListener {
 
         @Override
@@ -188,6 +210,9 @@ public class Panel2 extends JPanel {
         }
     }
 
+    /**
+     * An inner class for handling events that related to tabs of body panel
+     */
     private class RadioButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -205,6 +230,9 @@ public class Panel2 extends JPanel {
         }
     }
 
+    /**
+     * a panel for header item [key and value]
+     */
     private class HeaderItemPanel extends JPanel{
 
         private JTextField keyField;
@@ -272,6 +300,9 @@ public class Panel2 extends JPanel {
         }
     }
 
+    /**
+     * a panel for body item [key and value]
+     */
     private class BodyItemPanel extends JPanel{
 
         private JTextField keyField;
@@ -339,6 +370,10 @@ public class Panel2 extends JPanel {
         }
     }
 
+    /**
+     * set theme for panel 2
+     * @param newColor new color for theme
+     */
     public void setThemeForPanel2(Color newColor){
         requestBodyPanel.setBackground(newColor);
         noBodyPanel.setBackground(newColor);

@@ -4,6 +4,11 @@ import com.company.gui.InsomniaFrame;
 
 import javax.swing.*;
 
+/**
+ * A class for testing Insomnia GUI
+ *
+ * @author Maryam Goli
+ */
 public class Main {
 
     public static void main(String[] args) {
@@ -23,7 +28,4 @@ public class Main {
         frame.setVisible(true);
 
     }
-
-
-
 }

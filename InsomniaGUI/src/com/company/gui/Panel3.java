@@ -6,6 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+/**
+ * A class for showing panel 3 and response of selected request with response headers and body
+ *
+ * @author Maryam Goli
+ */
 public class Panel3 extends JPanel {
 
     // info panel :
@@ -29,6 +34,9 @@ public class Panel3 extends JPanel {
     private ArrayList<HeaderItemPanel> headersList;
     private JButton copyButton;
 
+    /**
+     * constructor method
+     */
     public Panel3(){
         this.setLayout(new BorderLayout());
         addInfoPanel();
@@ -48,6 +56,9 @@ public class Panel3 extends JPanel {
         this.add(tabbedPane, BorderLayout.CENTER);
     }
 
+    /**
+     * add panel for showing some information about response (for example size, status-code, ...)
+     */
     public void addInfoPanel(){
         // top of panel 3:
         statusField = new JTextField(" [ Status ] ");
@@ -79,6 +90,9 @@ public class Panel3 extends JPanel {
         this.add(responseInfoPanel, BorderLayout.PAGE_START);
     }
 
+    /**
+     * add panel for showing response headers with key and value
+     */
     public void addResponseHeadersPanel(){
         responseHeaderPanel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(responseHeaderPanel, BoxLayout.Y_AXIS);
@@ -112,6 +126,9 @@ public class Panel3 extends JPanel {
         responseHeaderPanel.add(copyButton);
     }
 
+    /**
+     * add panel for showing response body [two tabs : Raw & Preview]
+     */
     public void addResponseBodyPanel(){
         setRawPanel();
         setPreviewPanel();
@@ -136,6 +153,9 @@ public class Panel3 extends JPanel {
         responseBodyPanel.add(rawPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * set panel for Raw body
+     */
     public void setRawPanel(){
         radioButtonRaw = new JRadioButton("Raw");
 
@@ -150,12 +170,18 @@ public class Panel3 extends JPanel {
         rawPanel.add(rawText, BorderLayout.CENTER);
     }
 
+    /**
+     * set panel for Preview body
+     */
     public void setPreviewPanel(){
         radioButtonPreview = new JRadioButton("Preview");
         previewPanel = new JPanel();
     }
 
-    //todo :
+    //todo : copy button handler
+    /**
+     * An inner class for handling function of "Copy to Clipboard" button
+     */
     private class CopyButtonHandler implements ActionListener{
 
         @Override
@@ -166,6 +192,9 @@ public class Panel3 extends JPanel {
         }
     }
 
+    /**
+     * An inner class for handling events that related to tabs of response body
+     */
     private class RadioButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -184,6 +213,9 @@ public class Panel3 extends JPanel {
         }
     }
 
+    /**
+     * a panel for response header item
+     */
     private class HeaderItemPanel extends JPanel{
 
         private JPanel keyValuePanel;
@@ -210,6 +242,10 @@ public class Panel3 extends JPanel {
 
     }
 
+    /**
+     * set theme for panel 3
+     * @param newColor new color for theme
+     */
     public void setThemeForPanel3(Color newColor){
         responseBodyPanel.setBackground(newColor);
         rawPanel.setBackground(newColor);
